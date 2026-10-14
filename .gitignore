@@ -1,0 +1,32 @@
+# 社内向けの企画・設計書（想定受注額などを含むため公開しない）
+spec.md
+
+# 依存パッケージ
+node_modules/
+
+# テスト・Lighthouse の出力
+lighthouse*.json
+lh-*.json
+*.report.html
+*.report.json
+.lighthouseci/
+test-results/
+playwright-report/
+screenshots/
+coverage/
+qa*.out
+
+# 一時ファイル・ログ
+tmp/
+temp/
+*.tmp
+*.log
+*.bak
+*~
+
+# OS・エディタ
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

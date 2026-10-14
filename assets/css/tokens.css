@@ -1,0 +1,52 @@
+:root {
+  --color-black: #0B0B0C;
+  --color-surface: #151517;
+  --color-line: #2A2A2E;
+  --color-white: #F4F2EE;
+  --color-gray: #9A9893;
+  --color-ink: #141414;
+  --color-orange: #FF6A1A;
+  --color-orange-deep: #C2410C;
+  --color-error: #FF8A80;
+
+  --font-en: "Archivo", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  --font-ja: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --fs-display: clamp(48px, 9vw, 128px);
+  --fs-h1: clamp(32px, 5vw, 56px);
+  --fs-h2: clamp(26px, 3.6vw, 40px);
+  --fs-h3: 20px;
+  --fs-body: 16px;
+  --fs-note: 13px;
+  --fs-label: 12px;
+
+  --lh-body: 1.9;
+  --ls-ja: 0.04em;
+  --ls-en: -0.02em;
+  --ls-mono: 0.12em;
+
+  --container: 1200px;
+  --gutter: 20px;
+  --section-y: 96px;
+  --header-h: 64px;
+  --sticky-h: 64px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 32px;
+    --section-y: 128px;
+    --header-h: 72px;
+  }
+}
+
+@media (min-width: 1080px) {
+  :root {
+    --gutter: 48px;
+    --section-y: 160px;
+    --header-h: 80px;
+  }
+}

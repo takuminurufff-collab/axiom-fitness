@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="48" viewBox="0 0 320 48" role="img" aria-label="AXIOM FITNESS">
+  <rect width="320" height="48" fill="#0B0B0C"/>
+  <path d="M8 38 22 10l14 28" fill="none" stroke="#F4F2EE" stroke-width="3.5"/>
+  <rect x="6" y="39" width="32" height="3" fill="#FF6A1A"/>
+  <text x="52" y="33" font-family="Archivo, 'Arial Black', Arial, sans-serif" font-weight="700" font-size="22" letter-spacing="0.5" fill="#F4F2EE">AXIOM <tspan fill="#9A9893">FITNESS</tspan></text>
+</svg>
