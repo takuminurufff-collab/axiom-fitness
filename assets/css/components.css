@@ -1165,6 +1165,12 @@
   border-color: var(--color-orange);
 }
 
+.input[type="date"]:focus-within {
+  border-color: var(--color-orange);
+  outline: 2px solid var(--color-orange);
+  outline-offset: 2px;
+}
+
 [aria-invalid="true"] {
   border-color: var(--color-error) !important;
 }
