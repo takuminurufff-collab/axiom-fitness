@@ -3,8 +3,23 @@
 株式会社すみ卓 Web制作事業のテスト案件（ポートフォリオ兼用）として制作した、**架空のパーソナルジム**のデモサイトです。
 掲載している店舗・料金・サービス・連絡先はすべて架空のもので、実在しません。予約フォームはデモで、入力内容は送信も保存もされません。
 
+## 公開URL
+
+**https://takuminurufff-collab.github.io/axiom-fitness/**
+
+| ページ | URL |
+| --- | --- |
+| トップ | https://takuminurufff-collab.github.io/axiom-fitness/ |
+| 料金・サービス | https://takuminurufff-collab.github.io/axiom-fitness/service.html |
+| 店舗・無料体験予約 | https://takuminurufff-collab.github.io/axiom-fitness/reserve.html |
+
+GitHub Pages（`main` ブランチのルート）で公開しています。リポジトリ：https://github.com/takuminurufff-collab/axiom-fitness
+
+## 概要
+
 - 全ページの最上部に告知バー、フッターに架空案件の注記を常に表示しています。
-- 全ページに `noindex, nofollow` を設定し、`robots.txt` もすべて拒否（`Disallow: /`）にしているため、検索エンジンには載りません。
+- 全ページに `<meta name="robots" content="noindex, nofollow">` を設定しているため、検索エンジンには載りません。
+  - 同梱の `robots.txt`（`Disallow: /`）は、ドメイン直下に置いたときに働くものです。現在の公開URL（`/axiom-fitness/` 配下）では検索エンジンに読まれないため、検索除外は上記の `noindex` で行っています。独自ドメインやユーザーサイト（`<ユーザー名>.github.io` リポジトリ）で公開する場合は、そのまま有効になります。
 - 依存ライブラリのない静的サイト（HTML＋CSS＋素のJavaScript）です。外部から読み込むのは Google Fonts だけです。
 
 ## ファイル構成
@@ -54,9 +69,10 @@ npx serve .
    ```
 3. リポジトリの **Settings → Pages** を開き、「Build and deployment」の Source を **Deploy from a branch**、Branch を **main / (root)** にして保存します。
 4. 数分後、`https://<ユーザー名>.github.io/axiom-fitness/` で公開されます。
-5. 公開URLが決まったら、各HTMLの `<head>` にある次の2か所を更新します。
-   - コメントアウトしてある `<link rel="canonical">` を公開URLにして有効化
-   - `og:image` を絶対URL（例：`https://<ユーザー名>.github.io/axiom-fitness/assets/img/ogp.png`）に変更
+5. 各HTMLの `<head>` にある次の3か所を、公開URLに合わせます（現在は上記の公開URLで設定済み。公開先やリポジトリ名を変えたときに更新してください）。
+   - `<link rel="canonical">`：そのページの公開URL（トップはルートのURL）
+   - `og:url`：canonical と同じURL
+   - `og:image`：OGP画像の絶対URL（`<公開URL>/assets/img/ogp.png`）
 
 Cloudflare Pages の場合は、リポジトリを接続し、ビルドコマンドは空欄、出力ディレクトリは `/` のままで公開できます。
 
