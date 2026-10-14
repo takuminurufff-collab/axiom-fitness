@@ -68,7 +68,7 @@
     time1: (el) => (el.value ? "" : MSG.time),
     date2: (el) => (el.value === "" || inRange(el.value) ? "" : MSG.date),
     name: (el) => (el.value.trim() ? "" : MSG.name),
-    kana: (el) => (/^[ァ-ヴー・　 ]+$/.test(el.value.trim()) && /[ァ-ヴ]/.test(el.value) ? "" : MSG.kana),
+    kana: (el) => (/^[ァ-ヺー・　 ]+$/.test(el.value.trim()) && /[ァ-ヺ]/.test(el.value) ? "" : MSG.kana),
     email: (el) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) ? "" : MSG.email),
     tel: (el) => (/^(?=.*\d)[0-9-]{10,13}$/.test(toHalfWidthTel(el.value)) ? "" : MSG.tel),
     agree: (el) => (el.checked ? "" : MSG.agree),
