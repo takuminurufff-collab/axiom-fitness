@@ -128,6 +128,7 @@ CSSファイルは容量（合計50KB未満）を守るためコメントを入�
 | `html:not(.js)` のルール | JavaScriptが無効でも、ナビが折り返して全部表示されるようにするため |
 | 表示アニメーションの初期状態（非表示）は `.js [data-reveal]` のときだけ | JavaScriptが無効でも内容が見えるようにするため（仕様書§8-6） |
 | `body.has-sticky-cta` の下余白 | SPの下部固定CTA（高さ64px＋iPhoneのホームバー領域）が、フッターやフォームのボタンを隠さないようにするため |
+| `--font-en`（Archivo）と `--font-mono`（IBM Plex Mono）の2番目に `"Zen Kaku Gothic New"` を入れている（tokens.css） | 欧文フォントには日本語の字形がないため、英字・数字用の要素に含まれる日本語・全角記号（「月4回」「無料」「株式会社すみ卓」「―」など）が OS のフォントで表示されないよう、仕様の和文フォントに落とすため |
 | `prefers-reduced-motion: reduce` で全アニメーションを止めている | OSの「視差効果を減らす」設定に従うため（仕様書§4-4・§7-3） |
 
 ### 部品（components.css）
