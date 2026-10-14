@@ -262,7 +262,16 @@
     }
   });
 
-  // Enterキー等による送信もすべてここで止める（外部送信は行わない）
+  // 入力欄での Enter による暗黙の送信（勝手に次へ進む・完了する）を止める
+  // ボタン上の Enter、textarea の改行、日本語入力の確定の Enter はそのまま
+  form.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || e.isComposing) return;
+    if (e.target.matches('input:not([type="submit"]):not([type="button"]):not([type="reset"]), select')) {
+      e.preventDefault();
+    }
+  });
+
+  // 送信はすべてここで止める（外部送信は行わない）
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     if (current < TOTAL) {
