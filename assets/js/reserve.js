@@ -24,6 +24,7 @@
   const TOTAL = steps.length;
   const QUESTION_MAX = 500;
   let current = 1;
+  let completed = false;
 
   /* ---------- 日付の範囲（明日〜30日後） ---------- */
   const pad = (n) => String(n).padStart(2, "0");
@@ -241,6 +242,9 @@
 
   /* ---------- 完了（デモ） ---------- */
   const finish = () => {
+    // 連打などで完了処理が二重に走らないようにする
+    completed = true;
+    submitBtn.disabled = true;
     form.reset();
     updateCount();
     confirmList.replaceChildren();
@@ -274,6 +278,7 @@
   // 送信はすべてここで止める（外部送信は行わない）
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    if (completed) return;
     if (current < TOTAL) {
       if (validateStep(current)) goTo(current + 1);
       return;
