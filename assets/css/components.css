@@ -1332,10 +1332,22 @@
   }
 }
 
-.confirm-list__edit {
+.confirm-list .confirm-list__action {
   grid-row: 1 / span 2;
   grid-column: 2;
   align-self: center;
+  font-family: var(--font-ja);
+  white-space: normal;
+}
+
+@media (min-width: 768px) {
+  .confirm-list .confirm-list__action {
+    grid-row: 1;
+    grid-column: 3;
+  }
+}
+
+.confirm-list__edit {
   min-height: 44px;
   min-width: 64px;
   padding: 0 12px;
@@ -1344,13 +1356,6 @@
   border-radius: 999px;
   color: var(--color-white);
   font-size: 13px;
-}
-
-@media (min-width: 768px) {
-  .confirm-list__edit {
-    grid-row: 1;
-    grid-column: 3;
-  }
 }
 
 .confirm-list__edit:hover {

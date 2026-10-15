@@ -234,7 +234,12 @@
         goTo(step, target);
       });
 
-      row.append(dt, dd, edit);
+      // dl 内の div には dt・dd しか置けないため、「変更」ボタンは dd で包む
+      const action = document.createElement("dd");
+      action.className = "confirm-list__action";
+      action.append(edit);
+
+      row.append(dt, dd, action);
       fragment.append(row);
     });
     confirmList.replaceChildren(fragment);
