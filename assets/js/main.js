@@ -38,6 +38,7 @@
     const label = toggle.querySelector("[data-menu-label]");
     // メニュー表示中に背面を操作不可にする要素
     const outside = [
+      document.querySelector(".skip-link"),
       document.querySelector(".notice"),
       document.querySelector("main"),
       document.querySelector(".site-footer"),
@@ -66,8 +67,19 @@
     });
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && nav.classList.contains("is-open")) {
+      if (!nav.classList.contains("is-open")) return;
+      if (e.key === "Escape") {
         setOpen(false);
+        return;
+      }
+      // メニューを開いている間は、ロゴ・メニュー内リンク・閉じるボタンの間でフォーカスを循環させる
+      // （Safari などリンクを Tab で飛ばすブラウザでも同じ順になるよう、移動はすべてここで行う）
+      if (e.key === "Tab") {
+        const items = [document.querySelector(".logo"), ...nav.querySelectorAll("a"), toggle].filter(Boolean);
+        const index = items.indexOf(document.activeElement);
+        const next = index === -1 ? 0 : (index + (e.shiftKey ? -1 : 1) + items.length) % items.length;
+        e.preventDefault();
+        items[next].focus();
       }
     });
 
