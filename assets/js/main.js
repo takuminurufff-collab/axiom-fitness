@@ -8,25 +8,64 @@
 
   const body = document.body;
 
+  /* ---------- Webフォント：初回描画の後に適用 ---------- */
+  // フォントの CSS を最初の描画より前に当てると、フォントファイル（約200KB）の取得が最初の描画を待たせるため、
+  // 最初のフレームを描いた後で media="print" を all に切り替える（最終的な見た目は同じ。display=swap）。
+  // reserve.js はフォントの事前読み込みを、この Promise（CSS の適用と読み込みの完了）の後に行う。
+  const fontLinks = Array.from(document.querySelectorAll("link[data-font-css]"));
+  window.axiomFontsApplied = new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const loaded = fontLinks.map(
+          (link) =>
+            new Promise((done) => {
+              if (link.sheet) {
+                done();
+              } else {
+                link.addEventListener("load", done, { once: true });
+                link.addEventListener("error", done, { once: true });
+              }
+            })
+        );
+        fontLinks.forEach((link) => {
+          link.media = "all";
+        });
+        Promise.all(loaded).then(resolve);
+      }, 0);
+    });
+  });
+
   /* ---------- Header：100pxスクロールで背景切替 ---------- */
   const header = document.querySelector(".site-header");
   if (header) {
-    let ticking = false;
-    const update = () => {
-      header.classList.toggle("is-scrolled", window.scrollY > 100);
-      ticking = false;
-    };
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (!ticking) {
-          ticking = true;
-          requestAnimationFrame(update);
-        }
-      },
-      { passive: true }
-    );
-    update();
+    if ("IntersectionObserver" in window) {
+      // ページ上端から99〜100pxに置いた1pxの目印が画面外に出たら（＝100pxを超えてスクロールしたら）切り替える
+      // （scrollY を読むと最初の描画の前にレイアウトを強制するため、位置の読み取りは行わない）
+      const marker = document.createElement("div");
+      marker.setAttribute("aria-hidden", "true");
+      marker.style.cssText = "position:absolute;top:99px;left:0;width:1px;height:1px;pointer-events:none;";
+      body.append(marker); // 本文の構造（告知バーが先頭）を変えないよう末尾に置く（位置は absolute で上端から決まる）
+      new IntersectionObserver((entries) => {
+        const e = entries[0];
+        header.classList.toggle("is-scrolled", !e.isIntersecting && e.boundingClientRect.top < 0);
+      }).observe(marker);
+    } else {
+      let ticking = false;
+      const update = () => {
+        header.classList.toggle("is-scrolled", window.scrollY > 100);
+        ticking = false;
+      };
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(update);
+          }
+        },
+        { passive: true }
+      );
+    }
   }
 
   /* ---------- SPメニュー（全画面オーバーレイ） ---------- */
