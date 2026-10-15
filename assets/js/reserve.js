@@ -24,6 +24,7 @@
   const TOTAL = steps.length;
   const QUESTION_MAX = 500;
   let current = 1;
+  let completed = false;
 
   /* ---------- 日付の範囲（明日〜30日後） ---------- */
   const pad = (n) => String(n).padStart(2, "0");
@@ -55,15 +56,29 @@
     agree: "個人情報の取り扱いへの同意が必要です",
   };
 
+  // 電話番号：日本語入力のままでも通るよう、全角数字とハイフン類（全角ハイフン・長音符など）を半角にそろえる
+  const toHalfWidthTel = (v) =>
+    v
+      .replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
+      .replace(/[‐‑‒–—―−ーｰ－]/g, "-")
+      .trim();
+
   const rules = {
     date1: (el) => (inRange(el.value) ? "" : MSG.date),
     time1: (el) => (el.value ? "" : MSG.time),
     date2: (el) => (el.value === "" || inRange(el.value) ? "" : MSG.date),
     name: (el) => (el.value.trim() ? "" : MSG.name),
-    kana: (el) => (/^[ァ-ヴー・　 ]+$/.test(el.value.trim()) && /[ァ-ヴ]/.test(el.value) ? "" : MSG.kana),
+    kana: (el) => (/^[ァ-ヺー・　 ]+$/.test(el.value.trim()) && /[ァ-ヺ]/.test(el.value) ? "" : MSG.kana),
     email: (el) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()) ? "" : MSG.email),
-    tel: (el) => (/^(?=.*\d)[0-9-]{10,13}$/.test(el.value.trim()) ? "" : MSG.tel),
+    tel: (el) => (/^(?=.*\d)[0-9-]{10,13}$/.test(toHalfWidthTel(el.value)) ? "" : MSG.tel),
     agree: (el) => (el.checked ? "" : MSG.agree),
+  };
+
+  // 入力欄を離れたとき・ステップを進めるときに、表示中の値も半角にそろえる（変換中の値は書き換えない）
+  const normalizers = {
+    tel: (el) => {
+      el.value = toHalfWidthTel(el.value);
+    },
   };
 
   const stepFields = {
@@ -113,6 +128,7 @@
   const validateStep = (n) => {
     const errors = [];
     stepFields[n].forEach((name) => {
+      if (normalizers[name]) normalizers[name](form.elements[name]);
       const message = validateField(name);
       if (message) errors.push({ el: form.elements[name], message });
     });
@@ -129,7 +145,10 @@
   Object.keys(rules).forEach((name) => {
     const el = form.elements[name];
     const evt = el.type === "checkbox" ? "change" : "blur";
-    el.addEventListener(evt, () => validateField(name));
+    el.addEventListener(evt, () => {
+      if (normalizers[name]) normalizers[name](el);
+      validateField(name);
+    });
     el.addEventListener("input", () => {
       if (el.getAttribute("aria-invalid") === "true") validateField(name);
     });
@@ -215,7 +234,12 @@
         goTo(step, target);
       });
 
-      row.append(dt, dd, edit);
+      // dl 内の div には dt・dd しか置けないため、「変更」ボタンは dd で包む
+      const action = document.createElement("dd");
+      action.className = "confirm-list__action";
+      action.append(edit);
+
+      row.append(dt, dd, action);
       fragment.append(row);
     });
     confirmList.replaceChildren(fragment);
@@ -223,6 +247,9 @@
 
   /* ---------- 完了（デモ） ---------- */
   const finish = () => {
+    // 連打などで完了処理が二重に走らないようにする
+    completed = true;
+    submitBtn.disabled = true;
     form.reset();
     updateCount();
     confirmList.replaceChildren();
@@ -244,9 +271,19 @@
     }
   });
 
-  // Enterキー等による送信もすべてここで止める（外部送信は行わない）
+  // 入力欄での Enter による暗黙の送信（勝手に次へ進む・完了する）を止める
+  // ボタン上の Enter、textarea の改行、日本語入力の確定の Enter はそのまま
+  form.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || e.isComposing) return;
+    if (e.target.matches('input:not([type="submit"]):not([type="button"]):not([type="reset"]), select')) {
+      e.preventDefault();
+    }
+  });
+
+  // 送信はすべてここで止める（外部送信は行わない）
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    if (completed) return;
     if (current < TOTAL) {
       if (validateStep(current)) goTo(current + 1);
       return;

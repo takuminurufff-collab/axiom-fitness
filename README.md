@@ -128,6 +128,7 @@ CSSファイルは容量（合計50KB未満）を守るためコメントを入�
 | `html:not(.js)` のルール | JavaScriptが無効でも、ナビが折り返して全部表示されるようにするため |
 | 表示アニメーションの初期状態（非表示）は `.js [data-reveal]` のときだけ | JavaScriptが無効でも内容が見えるようにするため（仕様書§8-6） |
 | `body.has-sticky-cta` の下余白 | SPの下部固定CTA（高さ64px＋iPhoneのホームバー領域）が、フッターやフォームのボタンを隠さないようにするため |
+| `--font-en`（Archivo）と `--font-mono`（IBM Plex Mono）の2番目に `"Zen Kaku Gothic New"` を入れている（tokens.css） | 欧文フォントには日本語の字形がないため、英字・数字用の要素に含まれる日本語・全角記号（「月4回」「無料」「株式会社すみ卓」など）が OS のフォントで表示されないよう、仕様の和文フォントに落とすため |
 | `prefers-reduced-motion: reduce` で全アニメーションを止めている | OSの「視差効果を減らす」設定に従うため（仕様書§4-4・§7-3） |
 
 ### 部品（components.css）
@@ -158,3 +159,19 @@ CSSファイルは容量（合計50KB未満）を守るためコメントを入�
 - 入力内容は localStorage・Cookie などに保存しません。完了画面を表示した時点ですべて破棄します。
 - 確認画面への入力値の反映は `textContent` だけで行い、`innerHTML` は使いません。
 - 計測タグは入れていません。実案件で Google Analytics 4 を導入する場合に備えて、CTAに `data-cta="hero"` などの位置属性を付けてあります。
+
+### Content-Security-Policy（CSP）
+
+各HTMLの `<head>` に `<meta http-equiv="Content-Security-Policy">` を入れています。読み込めるのは自サイトと Google Fonts だけで、インラインのスクリプトとイベント属性はハッシュで個別に許可しています。
+
+| 許可しているインラインのコード | ハッシュ |
+| --- | --- |
+| `<script>document.documentElement.classList.add("js");</script>` | `sha256-WZRJfWvsnNCPcxzZwvyhovnZGqhZaC+8gPGPRbx6wTk=` |
+| Webフォントの `<link>` の `onload="this.media='all'"` | `sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc=`（`'unsafe-hashes'` と併用） |
+
+- この2か所の中身を1文字でも変えると、ブラウザに止められて動かなくなります（JSが無効と同じ状態・Webフォントが当たらない）。変えたときは、新しい中身の SHA-256 ハッシュを計算して CSP の `script-src` を書き換えてください。
+  ```bash
+  node -e "console.log('sha256-'+require('crypto').createHash('sha256').update('ここに中身','utf8').digest('base64'))"
+  ```
+- 外部のサービス（計測タグ・地図など）を追加するときは、その読み込み先を CSP に追加してください。
+- `frame-ancestors`（他サイトへの埋め込み禁止）などは meta では効かず、GitHub Pages では HTTP ヘッダーを設定できないため入れていません。

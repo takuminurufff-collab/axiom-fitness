@@ -9,9 +9,9 @@
   --color-orange-deep: #C2410C;
   --color-error: #FF8A80;
 
-  --font-en: "Archivo", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  --font-en: "Archivo", "Zen Kaku Gothic New", "Arial Black", "Helvetica Neue", Arial, sans-serif;
   --font-ja: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-mono: "IBM Plex Mono", "Zen Kaku Gothic New", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   --fs-display: clamp(48px, 9vw, 128px);
   --fs-h1: clamp(32px, 5vw, 56px);

@@ -601,6 +601,7 @@ body.is-menu-open {
 
 .breadcrumb a {
   display: inline-block;
+  min-width: 44px;
   padding-block: 12px;
   color: var(--color-white);
   text-underline-offset: 4px;
@@ -667,6 +668,7 @@ body.is-menu-open {
 .footer-nav a {
   display: inline-flex;
   align-items: center;
+  min-width: 44px;
   min-height: 44px;
   text-decoration: none;
 }
