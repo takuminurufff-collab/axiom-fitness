@@ -296,16 +296,19 @@
 
   /* ---------- 後から表示する文言のWebフォントを事前に読み込む ---------- */
   // フォーム操作中に追加のフォント取得（外部通信）が起きないよう、ページ表示時に済ませておく
+  // （main.js が Webフォントを適用し終えてから行う。最初の描画をフォントの取得で待たせないため）
   if (document.fonts && document.fonts.load) {
-    const section = document.getElementById("form");
-    const text =
-      (section ? section.textContent : "") +
-      Object.values(MSG).join("") +
-      "変更を—、年月日（）" +
-      WEEK.join("") +
-      "0123456789/";
-    ["400", "500", "700"].forEach((w) => {
-      document.fonts.load(`${w} 16px "Zen Kaku Gothic New"`, text).catch(() => {});
+    (window.axiomFontsApplied || Promise.resolve()).then(() => {
+      const section = document.getElementById("form");
+      const text =
+        (section ? section.textContent : "") +
+        Object.values(MSG).join("") +
+        "変更を—、年月日（）" +
+        WEEK.join("") +
+        "0123456789/";
+      ["400", "500", "700"].forEach((w) => {
+        document.fonts.load(`${w} 16px "Zen Kaku Gothic New"`, text).catch(() => {});
+      });
     });
   }
 })();

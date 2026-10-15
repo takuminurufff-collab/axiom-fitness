@@ -104,6 +104,10 @@ node tools/update-font-subset.mjs
 
 実行しなかった場合も表示は崩れませんが、新しく追加した文字だけ端末の標準フォントで表示されます。
 
+### Webフォントの適用のしかた
+
+Webフォントの `<link>` は `media="print" data-font-css` で読み込み、`assets/js/main.js` が**最初の描画が終わった後**に `media="all"` へ切り替えて適用しています。フォントファイル（約200KB）の取得で最初の描画を待たせないためで、最終的な見た目は同じです（`display=swap` のため、回線が遅いときは一瞬だけ端末のフォントで表示されます）。JavaScript が無効のときは `<noscript>` 内の `<link>` でそのまま適用されます。
+
 ### 写真を使う場合
 
 人物写真はトレーナー・会員と誤認されるため、デモでは使っていません。実案件で写真に差し替えるときは、`components.css` に用意してある画像枠クラスを使います。
@@ -162,14 +166,13 @@ CSSファイルは容量（合計50KB未満）を守るためコメントを入�
 
 ### Content-Security-Policy（CSP）
 
-各HTMLの `<head>` に `<meta http-equiv="Content-Security-Policy">` を入れています。読み込めるのは自サイトと Google Fonts だけで、インラインのスクリプトとイベント属性はハッシュで個別に許可しています。
+各HTMLの `<head>` に `<meta http-equiv="Content-Security-Policy">` を入れています。読み込めるのは自サイトと Google Fonts だけで、インラインのスクリプトはハッシュで個別に許可しています。
 
 | 許可しているインラインのコード | ハッシュ |
 | --- | --- |
 | `<script>document.documentElement.classList.add("js");</script>` | `sha256-WZRJfWvsnNCPcxzZwvyhovnZGqhZaC+8gPGPRbx6wTk=` |
-| Webフォントの `<link>` の `onload="this.media='all'"` | `sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc=`（`'unsafe-hashes'` と併用） |
 
-- この2か所の中身を1文字でも変えると、ブラウザに止められて動かなくなります（JSが無効と同じ状態・Webフォントが当たらない）。変えたときは、新しい中身の SHA-256 ハッシュを計算して CSP の `script-src` を書き換えてください。
+- この中身を1文字でも変えると、ブラウザに止められて動かなくなります（JSが無効と同じ状態になる）。変えたときは、新しい中身の SHA-256 ハッシュを計算して CSP の `script-src` を書き換えてください。
   ```bash
   node -e "console.log('sha256-'+require('crypto').createHash('sha256').update('ここに中身','utf8').digest('base64'))"
   ```
