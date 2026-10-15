@@ -1024,8 +1024,9 @@
 }
 
 .error-summary a {
-  display: inline-block;
-  padding-block: 4px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--color-error);
   text-underline-offset: 4px;
 }
