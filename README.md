@@ -159,3 +159,19 @@ CSSファイルは容量（合計50KB未満）を守るためコメントを入�
 - 入力内容は localStorage・Cookie などに保存しません。完了画面を表示した時点ですべて破棄します。
 - 確認画面への入力値の反映は `textContent` だけで行い、`innerHTML` は使いません。
 - 計測タグは入れていません。実案件で Google Analytics 4 を導入する場合に備えて、CTAに `data-cta="hero"` などの位置属性を付けてあります。
+
+### Content-Security-Policy（CSP）
+
+各HTMLの `<head>` に `<meta http-equiv="Content-Security-Policy">` を入れています。読み込めるのは自サイトと Google Fonts だけで、インラインのスクリプトとイベント属性はハッシュで個別に許可しています。
+
+| 許可しているインラインのコード | ハッシュ |
+| --- | --- |
+| `<script>document.documentElement.classList.add("js");</script>` | `sha256-WZRJfWvsnNCPcxzZwvyhovnZGqhZaC+8gPGPRbx6wTk=` |
+| Webフォントの `<link>` の `onload="this.media='all'"` | `sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc=`（`'unsafe-hashes'` と併用） |
+
+- この2か所の中身を1文字でも変えると、ブラウザに止められて動かなくなります（JSが無効と同じ状態・Webフォントが当たらない）。変えたときは、新しい中身の SHA-256 ハッシュを計算して CSP の `script-src` を書き換えてください。
+  ```bash
+  node -e "console.log('sha256-'+require('crypto').createHash('sha256').update('ここに中身','utf8').digest('base64'))"
+  ```
+- 外部のサービス（計測タグ・地図など）を追加するときは、その読み込み先を CSP に追加してください。
+- `frame-ancestors`（他サイトへの埋め込み禁止）などは meta では効かず、GitHub Pages では HTTP ヘッダーを設定できないため入れていません。
